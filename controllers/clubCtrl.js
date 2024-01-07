@@ -61,6 +61,19 @@ const clubCtrl = {
       return res.status(500).json({ message: error.message });
     }
   },
+  get_club: async (req, res) => {
+    try {
+      const clubId = req.params.clubId;
+      const club = await Club.findById(clubId);
+      if (!club) {
+        return res.status(400).json({ message: 'Клуба с таким названием нет' });
+      } else {
+        return res.status(200).json(club);
+      }
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 export default clubCtrl;

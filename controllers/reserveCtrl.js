@@ -7,7 +7,7 @@ const reserveCtrl = {
       const { idCustomer, idClub, roomNum } = req.body;
       let { from, to } = req.body;
       from = Number(from);
-      to = Number(to);
+      to = Number(to) + 1;
       const room = Number(roomNum);
       const club = await Club.findById(idClub);
       const customer = await Customer.findById(idCustomer);
@@ -45,7 +45,6 @@ const reserveCtrl = {
         from,
         to,
       };
-      console.log(customer);
       await customer.save();
       await club.save();
       return res.status(200).json({ message: 'Время успешно забронировано' });

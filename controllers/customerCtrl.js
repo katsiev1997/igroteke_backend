@@ -56,7 +56,6 @@ const customerCtrl = {
         if (isCorrect) {
           const access_token = createAccessToken({ id: customer._id });
           const refresh_token = createRefreshToken({ id: customer._id });
-
           res.cookie('refreshToken', refresh_token, {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             path: '/api/refresh_token',
@@ -64,7 +63,11 @@ const customerCtrl = {
           });
           return res.status(200).json({
             message: 'Вы успешно авторизовались!',
-            customer,
+            customer: {
+              id: customer._id,
+              phone: customer.phone,
+              booking: customer.booking,
+            },
             access_token,
           });
         } else {
@@ -104,7 +107,7 @@ const customerCtrl = {
 
           const access_token = createAccessToken({ id: result.id });
           return res.json({
-            token: access_token,
+            access_token,
             customer,
           });
         }
@@ -116,8 +119,10 @@ const customerCtrl = {
 };
 
 const createAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'})
-}
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '2h',
+  });
+};
 
 const createRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
