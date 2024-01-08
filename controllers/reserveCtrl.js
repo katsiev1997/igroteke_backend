@@ -8,6 +8,11 @@ const reserveCtrl = {
       let { from, to } = req.body;
       from = Number(from);
       to = Number(to) + 1;
+      if (to - from > 6) {
+        return res
+          .status(400)
+          .json({ message: 'Нельзя бронировать больше 3 часов!' });
+      }
       const room = Number(roomNum);
       const club = await Club.findById(idClub);
       const customer = await Customer.findById(idCustomer);

@@ -8,7 +8,6 @@ export const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     if (!decoded)
       return res.status(400).json({ msg: "Необходимо авторизоваться." });
-
     const customer = await Customer.findOne({ _id: decoded.id });
     req.body.idCustomer = customer._id;
     next();
