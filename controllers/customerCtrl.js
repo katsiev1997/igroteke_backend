@@ -6,12 +6,13 @@ const customerCtrl = {
   signup: async (req, res) => {
     try {
       const { phone, password, code } = req.body;
-      if (phone.length != 10) {
+      let isNumber = /^\d+$/.test(phone);
+      if (phone.length != 10 || isNumber == false) {
         return res
           .status(400)
           .json({ message: 'Номер телефона должен содержать 10 цифр!' });
       }
-      if (code != '00606') {
+      if (code != phone - 1234567890) {
         return res.status(400).json({ message: 'Неверный код!' });
       }
       if (password.length < 6) {
@@ -26,13 +27,15 @@ const customerCtrl = {
         });
       } else {
         const hashPassword = await bcrypt.hash(password, 8);
-        const newCustomer = await Customer.create({
+        await Customer.create({
           phone,
           password: hashPassword,
         });
         return res
           .status(200)
-          .json({ message: 'Вы успешно зарегистрировались!', newCustomer });
+          .json({
+            message: 'Вы успешно зарегистрировались!',
+          });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -68,7 +71,7 @@ const customerCtrl = {
               phone: customer.phone,
               booking: customer.booking,
             },
-            access_token,
+            token: access_token,
           });
         } else {
           return res.status(400).json({ message: 'Неверный пароль!' });
@@ -107,7 +110,7 @@ const customerCtrl = {
 
           const access_token = createAccessToken({ id: result.id });
           return res.json({
-            access_token,
+            token: access_token,
             customer,
           });
         }
