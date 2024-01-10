@@ -40,6 +40,10 @@ const clubSchema = new mongoose.Schema({
             true,
             true,
             true,
+            true,
+            true,
+            true,
+            true,
           ],
         },
         bookings: [
